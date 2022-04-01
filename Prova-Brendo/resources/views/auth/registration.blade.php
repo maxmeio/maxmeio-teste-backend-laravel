@@ -1,56 +1,117 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Brendo</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-
-
-</head>
-
-<body class="antialiased">
-
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Registro</h3>
-            <div class="card-tools">
-            </div>
-        </div>
-        <div class="card-body">
-            <form action="/login" method="post">
-                <div class="form-group">
-                    <label class="col-form-label" for="inputSuccess"><i class="fas fa-check"></i> Nome</label>
-                    <input type="text" name='nome'class="form-control is-valid" id="inputSuccess" placeholder="Nome completo ...">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Email</label>
-                    <input type="email" name="email" class="form-control is-invalid" id="exampleInputEmail1" placeholder="Enter email" aria-invalid="true" aria-describedby="exampleInputEmail1">
-                    <span id="exampleInputEmail1" class="invalid-feedback">Please enter a email address</span>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Senha</label>
-                    <input type="password" name="password" class="form-control is-invalid" id="exampleInputPassword1" placeholder="Password" aria-describedby="exampleInputPassword1" aria-invalid="true">
-                    <span id="exampleInputPassword1" class="invalid-feedback">Please provide a password</span>
-                </div>
-                <div class="form-group">
-                    <select name="user_group" id="">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="card-footer">
-                    <input type="submit" class="btn btn-primary">
-                </div>
-            </form>
+@include('app')
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Registro</h3>
+        <div class="card-tools">
         </div>
     </div>
-    <!-- /.card -->
+    <div class="card-body">
+    @if(!is_null($user_edit))
+        <form action="{{route('edit-user-confirm')}}" method="post">
+            @else
+            <form action="{{route('register')}}" method="post">
+            @endif
+            @csrf
+            @if(!is_null($user_edit))
+            <input type="hidden" name="user_id" value="{{$user_edit['id']}}">
+            @endif
+            <div class="form-group">
+                <label class="col-form-label" for="full_name"><i class="fas"></i> Nome Completo</label>
+                @if(!is_null($user_edit))
+                <input type="text" name='full_name' class="form-control" id="inputSuccess" placeholder="Nome completo ..." value="{{$user_edit['full_name']}}" required>
+                @else
+                <input type="text" name='full_name' class="form-control" id="inputSuccess" placeholder="Nome completo ..." required>
+                @endif
+            </div>
+
+            <div class="form-group">
+                <label for="InputEmail">Email</label>
+                @if(!is_null($user_edit))
+                <input type="email" name="email" class="form-control" id="InputEmail" placeholder="Enter email" value="{{$user_edit['email']}}" aria-invalid="false" aria-describedby="InputEmail" required>
+                @else
+                <input type="email" name="email" class="form-control" id="InputEmail" placeholder="Enter email" aria-invalid="false" aria-describedby="InputEmail">
+                @endif
+
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">Senha</label>
+                <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password" aria-describedby="exampleInputPassword1" aria-invalid="false">
+            </div>
+            <div class="form-group">
+                <label for="user_group">Grupo</label>
+                @if(!is_null($user_edit))
+                <select name="user_group_id" id="">
+                    @else
+                    <select name="user_group_id" id="">
+                        @endif
+                        @php
+
+                        use App\Models\UserGroups;
+
+                        use function PHPUnit\Framework\isNull;
+
+                        $user_groups = UserGroups::all();
+                        foreach ($user_groups as $user_group) {
+                            if (!is_null($user_edit) && $user_edit['user_group_id'] == $user_group['id']){
+                                echo '<option value="' . $user_group['id'] . '" selected>' . $user_group['group_name'] . '</option>';
+                            }else{
+                                echo '<option value="' . $user_group['id'] . '">' . $user_group['group_name'] . '</option>';
+                            }
+                        }
+                        @endphp
+                    </select>
+            </div>
+            <div class="card-footer">
+                <input type="submit" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Users List</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover dataTable dtr-inline">
+            <th>User Name</th>
+            <th>Email</th>
+            <th>User Group</th>
+            <th>Manage</th>
+            @foreach($users as $user)
+            <tr>
+                <td>{{$user['full_name']}}</td>
+                <td>{{$user['email']}}</td>
+                <td>{{$user['user_group_id']}}</td>
+                <td>
+                    <form action="/delete-user" method="post">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{$user['id']}}">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <form action="/edit-user" method="post">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{$user['id']}}">
+                        <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+            <!-- <tr>
+                <td>Brendo</td>
+                <td>brendoja@gmail.com</td>
+                <td>Administrator</td>
+                <td>
+                    <button></button>
+                    <button></button>
+                    <button></button>
+                </td>
+            </tr> -->
+        </table>
+    </div>
+
+</div>
+<!-- /.card -->
 </body>
 
 </html>

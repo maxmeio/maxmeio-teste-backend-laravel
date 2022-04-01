@@ -16,7 +16,7 @@ class AuthenticationController extends Controller
      */
     public function index()
     {
-        return view('auth.login');
+        return redirect('/');
     }
     /**
      * validate login info and iniciate session
@@ -34,44 +34,7 @@ class AuthenticationController extends Controller
             return redirect("auth.login")->withSuccess(("Error while doing login"));
         }
     }
-    /**
-     * registration page
-     * check if the current user is on admin group
-     */
-    public function registration(Request $req)
-    {
-        // if (Auth::check()) {
-            // var_dump($req->all());
-            // $data = $req;
-            return view('auth.registration');
-        // }
-        // return redirect("/login")->withSuccess(("You don't have permition to access this content"));
-    }
-    /**
-     * validate info and create a new user
-     */
-    public function registrate(Request $req)
-    {
-        $req->validate(
-            [
-                'name' => 'required',
-                'email' => 'required|email|unique:users',
-                'password' => 'required|min:8',
-                'user_group_id' => 'user_group_id'
-            ]
-        );
-        $data = $req->all();
-    }
-    public function createUser($data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'user_group_id' => $data['user_group_id']
-        ]);
-    }
-
+    
     public function editNews()
     {
         if (Auth::check()) {
@@ -84,6 +47,6 @@ class AuthenticationController extends Controller
         Session::flush();
         Auth::logout();
 
-        return Redirect('news.news');
+        return Redirect('/');
     }
 }

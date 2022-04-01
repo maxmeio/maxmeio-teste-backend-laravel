@@ -1,7 +1,11 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Http\Request;
+use Illuminate\Http\Middleware;
+
 // use AuthenticationController;
 /*
 |--------------------------------------------------------------------------
@@ -12,10 +16,11 @@ use Database\Seeders\DatabaseSeeder;
 /**
  * route to standatr news
  */
-Route::get('/', function () {
-    return view('news.news-list');
-});
-
+Route::controller('NewsController')->group(
+    function () {
+        Route::get('/', 'index');
+    }
+);
 Route::controller('AuthenticationController')->group(
     function () {
         /**
@@ -23,16 +28,31 @@ Route::controller('AuthenticationController')->group(
          */
         Route::get('/login', 'index');
         Route::post('/make-login', 'login')->name('login');
-        /**
-         * routes to registration algorithm
-         */
-        Route::get('/registration', 'registration')->name('register-user');
-        Route::post('/make-registration', 'registrate')->name('register.custom');
         Route::get('/logout', 'logOut')->name('signout');
+    }
+);
+Route::middleware(['auth'])->group(function () {
+    Route::controller('NewsController')->group(function () {
         /**
          * route to edit news
          */
-        Route::get('/edit-news', 'editNews');
+        Route::get('/manage-news', 'manageNews');
+        Route::post('/create-news', 'createNews');
+        Route::post('/edit-news', 'editNews');
+        Route::post('/delete-news', 'deleteNews');
+        Route::post('/auth-news', 'authorizeNews');
+    });
+});
+Route::controller('UserControler')->group(
+    function () {
+        Route::post('/edit-user', 'editUser');
+        Route::post('/edit-user-confirm', 'editUserConfirm')->name('edit-user-confirm');
+        /**
+         * routes to registration algorithm
+         */
+        Route::post('/make-registration', 'registrate')->name('register');
+        Route::get('/registration', 'registration')->name('register-user');
+        Route::post('/delete-user', 'deleteUser');
     }
 );
 
