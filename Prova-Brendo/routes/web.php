@@ -37,7 +37,8 @@ Route::middleware(['auth'])->group(function () {
          * route to edit news
          */
         Route::get('/manage-news', 'manageNews');
-        Route::post('/create-news', 'createNews');
+        Route::get('/create-news', 'createNews');
+        Route::post('/create-news-confirm', 'createNewsConfirm')->name('create-news-confirm');
         Route::post('/edit-news', 'editNews');
         Route::post('/delete-news', 'deleteNews');
         Route::post('/auth-news', 'authorizeNews');

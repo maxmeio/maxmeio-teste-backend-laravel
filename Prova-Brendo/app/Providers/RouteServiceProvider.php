@@ -18,7 +18,9 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/home';
-
+    /**
+     * becouse my compiuter don like me, i needed to add this $namespace in the project
+     */
     protected $namespace = 'App\Http\Controllers';
     /**
      * Define your route model bindings, pattern filters, etc.

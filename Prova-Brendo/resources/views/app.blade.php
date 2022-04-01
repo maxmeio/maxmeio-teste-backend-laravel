@@ -34,6 +34,7 @@
 
         use App\Models\UserGroups;
         use Illuminate\Support\Facades\Auth;
+        use Illuminate\Support\Facades\Storage;
 
         // print_r(Auth::user());
         if (Auth::check()) {
@@ -49,7 +50,7 @@
           </li>';
           } elseif (Auth::user()->user_group_id == 2) {
             echo '<li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Manage News</a>
+            <a href="manage-news" class="nav-link">Manage News</a>
           </li>';
             echo '<li class="nav-item d-none d-sm-inline-block">
             <a href="logout" class="nav-link">Logout</a>

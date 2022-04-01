@@ -18,10 +18,10 @@ return new class extends Migration
             $table->increments("id");
             $table->string("title");
             $table->longText("body");
-            $table->string("img_path");
+            $table->string("img_path")->nullable();
             $table->boolean("activated")->default(false);
             $table->unsignedBigInteger('user_editor_id');
-            $table->unsignedBigInteger('user_admin_id');
+            $table->unsignedBigInteger('user_admin_id')->nullable();
             $table->foreign("user_editor_id")->references("id")->on("users");
             $table->foreign("user_admin_id")->references("id")->on("users");
             $table->timestamps();
