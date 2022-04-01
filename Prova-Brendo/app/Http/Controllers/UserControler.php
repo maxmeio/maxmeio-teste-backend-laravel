@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
+use App\Models\UserGroups;
 
 class UserControler extends Controller
 {
@@ -18,6 +19,9 @@ class UserControler extends Controller
     {
         return view('auth.login');
     }
+    /**
+     * delete a user
+     */
     public function deleteUser(Request $req)
     {
         // echo 'aq';
@@ -25,6 +29,11 @@ class UserControler extends Controller
         User::destroy($data['user_id']);
         return redirect('/registration');
     }
+    /**
+     * edit an user page
+     * 
+     * take the user data and send to manage user page directly in the form
+     */
     public function editUser(Request $req)
     {
         $data = $req->all();
@@ -35,6 +44,9 @@ class UserControler extends Controller
             'users' => User::all()
         ]);
     }
+    /**
+     * handle user edit from the manage user page form
+     */
     public function editUserConfirm(Request $req)
     {
         $data = $req->all();
@@ -58,14 +70,12 @@ class UserControler extends Controller
      */
     public function registration(Request $req)
     {
-        // if (Auth::check()) {
-        // var_dump($req->all());
-        // $data = $req;
+        if (Auth::check()) {
         return view('auth.registration', [
             'user_edit' => null,
             'users' => User::all()
         ]);
-        // }
+        }
         // return redirect("/login")->withSuccess(("You don't have permition to access this content"));
     }
     /**
@@ -86,6 +96,9 @@ class UserControler extends Controller
         $new_user_id = $this->createUser($data);
         return redirect('/registration');
     }
+    /**
+     * create a new user with the given data
+     */
     public function createUser($data)
     {
         return User::create([
@@ -94,5 +107,12 @@ class UserControler extends Controller
             'password' => Hash::make($data['password']),
             'user_group_id' => $data['user_group_id']
         ]);
+    }
+    /**
+     * check if the given user is an Admin
+     */
+    public static function checkAdmin(User $user)
+    {
+        return UserGroups::find($user->user_group_id)->group_name == 'administrator';
     }
 }

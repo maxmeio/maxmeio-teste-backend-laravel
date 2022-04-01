@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 use function PHPSTORM_META\type;
 
+/**
+ * this class was created for just administractive propouse
+ */
 class UserTypeController extends Controller
 {
     public function getAllTypes()

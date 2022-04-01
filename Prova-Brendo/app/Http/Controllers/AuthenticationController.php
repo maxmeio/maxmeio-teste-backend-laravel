@@ -16,7 +16,7 @@ class AuthenticationController extends Controller
      */
     public function index()
     {
-        return redirect('/');
+        return view('auth.login');
     }
     /**
      * validate login info and iniciate session
