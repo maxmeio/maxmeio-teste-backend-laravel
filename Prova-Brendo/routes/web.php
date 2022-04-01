@@ -26,7 +26,7 @@ Route::controller('AuthenticationController')->group(
         /**
          * routes to login augorithm
          */
-        Route::get('/login', 'index');
+        Route::get('/login', 'index')->name('login-page');
         Route::post('/make-login', 'login')->name('login');
         Route::get('/logout', 'logOut')->name('signout');
     }
