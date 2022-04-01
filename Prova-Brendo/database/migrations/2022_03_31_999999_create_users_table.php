@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string("password");
             $table->unsignedBigInteger('user_group_id');
             $table->foreign("user_group_id")->references("id")->on("user_groups");
-            $table->timestamp("last_login", 0);
-            $table->rememberToken();
+            $table->timestamp("last_login", 0)->nullable();
+            $table->rememberToken()->nullable();
             $table->timestamps();
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user');
     }
 };
