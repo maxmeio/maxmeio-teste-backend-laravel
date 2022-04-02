@@ -17,10 +17,10 @@
 <body class="antialiased">
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-light navbar-white">
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="margin-left: 0px !important">
     <div class="container">
       <a href="/" class="navbar-brand">
-        <span class="brand-text font-weight-light">Prova</span>
+        <span class="brand-text font-weight-light">Brendo-news</span>
       </a>
       <!-- Left navbar links -->
       <ul class="navbar-nav">
@@ -66,3 +66,4 @@
       <!-- SEARCH FORM -->
     </div>
   </nav>
+  <div class="container">

@@ -12,15 +12,26 @@
             <input type="hidden" name="user_id" value="{{$user_id}}">
             <div class="form-group">
                 <label for="newsTitle">Title</label>
+                @if(!is_null($news))
+                <input type="Title" name="title" class="form-control is-invalid" id="newsTitle" value="{{$news['title']}}">
+                @else
                 <input type="Title" name="title" class="form-control is-invalid" id="newsTitle" placeholder="Enter Title">
+                @endif
             </div>
             <div class="form-group">
                 <label for="body">Body</label></br>
-                <textarea id="" name="body" rows="4" cols="50"></textarea>
+                @if(!is_null($news))
+                <textarea id="" name="body" rows="8" cols="100">{{$news['body']}}</textarea>
+                @else
+                <textarea id="" name="body" rows="8" cols="100"></textarea>
+                @endif
             </div>
             <div class="form-group">
                 <label for="File">Image</label></br>
                 <input type="file" id="" name="img" accept="image/*" >
+                @if(!is_null($news))
+                <img src="{{$news['img_path']}}" class="img-thumbnail"alt="">
+                @endif
             </div>
 
             <div class="card-footer">
@@ -29,7 +40,4 @@
         </form>
     </div>
 </div>
-<!-- /.card -->
-</body>
-
-</html>
+@include('app-footer')

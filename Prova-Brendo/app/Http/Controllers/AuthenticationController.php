@@ -31,7 +31,7 @@ class AuthenticationController extends Controller
         if (Auth::attempt($req->only('email', 'password'))) {
             return redirect()->intended();
         } else {
-            return redirect("auth.login")->withSuccess(("Error while doing login"));
+            return redirect("login")->withSuccess(("Error while doing login"));
         }
     }
     
@@ -40,7 +40,7 @@ class AuthenticationController extends Controller
         if (Auth::check()) {
             return view('news.edit');
         }
-        return redirect('auth.login')->withSuccess(('You are not allowed to access'));
+        return redirect('login')->withSuccess(('You are not allowed to access'));
     }
     public function logOut()
     {

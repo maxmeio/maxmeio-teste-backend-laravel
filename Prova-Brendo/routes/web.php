@@ -39,23 +39,33 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/manage-news', 'manageNews');
         Route::get('/create-news', 'createNews');
         Route::post('/create-news-confirm', 'createNewsConfirm')->name('create-news-confirm');
-        Route::post('/edit-news', 'editNews');
+        Route::post('/edit-news', 'editNews')->name('edit-news');
         Route::post('/delete-news', 'deleteNews');
         Route::post('/auth-news', 'authorizeNews');
     });
 });
-Route::controller('UserControler')->group(
-    function () {
-        Route::post('/edit-user', 'editUser');
-        Route::post('/edit-user-confirm', 'editUserConfirm')->name('edit-user-confirm');
-        /**
-         * routes to registration algorithm
-         */
-        Route::post('/make-registration', 'registrate')->name('register');
-        Route::get('/registration', 'registration')->name('register-user');
-        Route::post('/delete-user', 'deleteUser');
-    }
-);
+Route::middleware(['auth'])->group(function () {
+    Route::controller('UserControler')->group(
+        function () {
+            Route::post('/edit-user', 'editUser');
+            Route::post('/edit-user-confirm', 'editUserConfirm')->name('edit-user-confirm');
+            /**
+             * routes to registration algorithm
+             */
+            Route::post('/make-registration', 'registrate')->name('register');
+            Route::get('/registration', 'registrationPage')->name('register-user');
+            Route::post('/delete-user', 'deleteUser');
+        }
+    );
+});
+Route::middleware(['auth'])->group(function () {
+    Route::controller('UserGroupController')->group(
+        function () {
+            Route::get('/create-user-group', 'creageGroupPage')->name('create-user-group');
+            Route::post('/create-user-group-confirm', 'createGroupConfirm')->name('create-user-group-confirm');
+        }
+    );
+});
 
 /**
  * routes useds for admin propose

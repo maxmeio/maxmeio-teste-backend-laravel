@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use App\Models\UserGroups;
+use Illuminate\Support\Facades\DB;
 
 class UserControler extends Controller
 {
@@ -24,10 +25,14 @@ class UserControler extends Controller
      */
     public function deleteUser(Request $req)
     {
-        // echo 'aq';
-        $data = $req->all();
-        User::destroy($data['user_id']);
-        return redirect('/registration');
+        try {
+            $data = $req->all();
+            User::destroy($data['user_id']);
+
+            return redirect(route('register-user'));
+        } catch (\Throwable $th) {
+            return $this->registrationPage(errors: "Users can't be deleted");
+        }
     }
     /**
      * edit an user page
@@ -37,12 +42,9 @@ class UserControler extends Controller
     public function editUser(Request $req)
     {
         $data = $req->all();
-
         $user = User::find($data['user_id']);
-        return view('auth.registration', [
-            'user_edit' => $user,
-            'users' => User::all()
-        ]);
+
+        return $this->registrationPage($user);
     }
     /**
      * handle user edit from the manage user page form
@@ -59,24 +61,24 @@ class UserControler extends Controller
         }
         $user->user_group_id = $data['user_group_id'];
         $user->save();
-        return view('auth.registration', [
-            'user_edit' => $user,
-            'users' => User::all()
-        ]);
+
+        return redirect(route('register-user'));
     }
+
+
     /**
      * registration page
      * check if the current user is on admin group
      */
-    public function registration(Request $req)
+    public function registrationPage(User $user_edit = null, $errors = null)
     {
-        if (Auth::check()) {
+        $users = DB::table('users')->join('user_groups', 'users.user_group_id', '=', 'user_groups.id')->select(['users.id', 'users.full_name', 'users.email', 'user_groups.group_name'])->get()->all();
+        // print_r($users);
         return view('auth.registration', [
-            'user_edit' => null,
-            'users' => User::all()
+            'user_edit' => $user_edit,
+            'users' => $users,
+            'error' => $errors
         ]);
-        }
-        // return redirect("/login")->withSuccess(("You don't have permition to access this content"));
     }
     /**
      * validate info and create a new user

@@ -23,9 +23,12 @@ class NewsController extends Controller
     /**
      * wainting for implementation
      */
-    public function editNews()
+    public function editNews(Request $req)
     {
-        return redirect()->intended();
+        $data = $req->all();
+        $news = News::find($data['news_id']);
+
+        return $this->createNews($news);
     }
     /**
      * verify de user group and sent de correct page for managing News
@@ -47,12 +50,13 @@ class NewsController extends Controller
         }
     }
     /**
-     * redirect to Create News form Page
+     * redirect to Create/edit News form Page
      */
-    public function createNews()
+    public function createNews($news = null)
     {
         return view('news.news-create', [
             'user_id' => Auth::id(),
+            'news' => $news,
         ]);
     }
     /**
@@ -60,13 +64,13 @@ class NewsController extends Controller
      */
     public function createNewsConfirm(Request $req)
     {
-        $file = $req->file('img')->store('images');
+        $file = $req->img->store('images', 'public-imgs');
 
         $data = $req->all();
         $new = News::create([
             'title' => $data['title'],
             'body' => $data['body'],
-            'img_path' => $file,
+            'img_path' => 'storage/images/' . $file,
             'activated' => false,
             'user_editor_id' => $data['user_id'],
         ]);
